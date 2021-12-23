@@ -13,6 +13,7 @@
           <van-swipe-item v-for="banner in bannerList.list" :key="banner.bannerId">
             <div class="my-swipe--image">
               <img :src="banner.pic" :alt="banner.typeTitle" />
+              <p class="my-swipe--type" :style="{ backgroundColor: banner.titleColor }" v-if="banner.showAdTag">{{ banner.typeTitle }}</p>
             </div>
           </van-swipe-item>
         </van-swipe>
@@ -38,7 +39,7 @@ const getBanner = async () => {
   const result = await banner({ type: 1 })
 
   if (result) {
-    bannerList.list = result.banners
+    bannerList.list = (result as any).banners
   }
 }
 
@@ -65,17 +66,32 @@ onMounted(() => {
   }
 
   &-swiper {
-    .my-swipe--image {
-      width: 344px;
-      margin: 0 auto;
-      border-radius: 10px;
-      overflow: hidden;
-
-      img {
-        width: 100%;
+    .my-swipe {
+      position: relative;
+      .my-swipe--image {
+        width: 344px;
+        margin: 0 auto;
         border-radius: 10px;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          border-radius: 10px;
+        }
+      }
+
+      .my-swipe--type {
+        position: absolute;
+        right: 15.6px;
+        bottom: 2px;
+        padding: 6px;
+        font-size: 10px;
+        color: #fff;
+        opacity: 0.8;
+        border-radius: 10px 0 10px 0;
       }
     }
+    
 
     &::v-deep(.van-swipe__indicator) {
       width: 10px;
