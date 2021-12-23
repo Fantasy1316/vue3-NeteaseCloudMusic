@@ -1,7 +1,7 @@
 import { App } from 'vue'
-import { Button } from 'vant'
+import { ConfigProvider, Button, Tabbar, TabbarItem, Popup, Cell, CellGroup, Switch } from 'vant'
 
-const plugins = [Button]
+const plugins = [ConfigProvider, Button, Tabbar, TabbarItem, Popup, Cell, CellGroup, Switch]
 
 export const vantPlugins = {
   install: (app: App) => {
