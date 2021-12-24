@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add postcss-px-to-viewport -D
+  /usr/local/bin/node /usr/local/bin/yarn add @typs/node -D
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -14,25 +14,34 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/postcss-px-to-viewport: ETIMEDOUT
-      at Timeout._onTimeout (/usr/local/lib/node_modules/yarn/lib/cli.js:141282:19)
-      at listOnTimeout (node:internal/timers:557:17)
-      at processTimers (node:internal/timers:500:7)
+  Error: https://registry.yarnpkg.com/@typs%2fnode: Not found
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66938:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140622:22)
+      at Request.emit (node:events:390:28)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141594:10)
+      at Request.emit (node:events:390:28)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141516:12)
+      at Object.onceWrapper (node:events:509:28)
+      at IncomingMessage.emit (node:events:402:35)
+      at endReadableNT (node:internal/streams/readable:1343:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
 
 npm manifest: 
   {
     "name": "vue3-neteasecloudmusic",
     "version": "0.0.0",
     "scripts": {
-      "dev": "vite",
+      "dev": "vite --host",
       "build": "vue-tsc --noEmit && vite build",
       "preview": "vite preview",
       "lint": "eslint ./src --ext .vue,.js,.ts,.tsx"
     },
     "dependencies": {
+      "axios": "^0.24.0",
       "vant": "3.3.7",
       "vue": "^3.2.25",
       "vue-router": "^4.0.12",
+      "vue3-lazy": "^1.0.0-alpha.1",
       "vuex": "^4.0.2"
     },
     "devDependencies": {
@@ -45,6 +54,7 @@ npm manifest:
       "eslint-plugin-vue": "^8.2.0",
       "less": "^4.1.2",
       "less-loader": "^10.2.0",
+      "postcss-px-to-viewport": "^1.1.1",
       "prettier": "^2.5.1",
       "typescript": "^4.4.4",
       "vite": "^2.7.2",
@@ -483,6 +493,13 @@ Lockfile:
     version "1.2.1"
     resolved "https://registry.yarnpkg.com/assert-never/-/assert-never-1.2.1.tgz#11f0e363bf146205fb08193b5c7b90f4d1cf44fe"
     integrity sha512-TaTivMB6pYI1kXwrFlEhLeGfOqoDNdTxjCdwRfFFkEA30Eu+k48W34nlok2EYWJfFFzqaEmichdNM7th6M5HNw==
+  
+  axios@^0.24.0:
+    version "0.24.0"
+    resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+    integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+    dependencies:
+      follow-redirects "^1.14.4"
   
   babel-walk@3.0.0-canary-5:
     version "3.0.0-canary-5"
@@ -1070,6 +1087,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.4.tgz#28d9969ea90661b5134259f312ab6aa7929ac5e2"
     integrity sha512-8/sOawo8tJ4QOBX8YlQBMxL8+RLZfxMQOif9o0KUKTNTjMYElWPE0r/m5VNFxTRd0NSw8qSy8dajrwX4RYI1Hw==
   
+  follow-redirects@^1.14.4:
+    version "1.14.6"
+    resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
+    integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
+  
   fs-extra@^10.0.0:
     version "10.0.0"
     resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-10.0.0.tgz#9ff61b655dde53fb34a82df84bb214ce802e17c1"
@@ -1490,7 +1512,7 @@ Lockfile:
       lower-case "^2.0.2"
       tslib "^2.0.3"
   
-  object-assign@^4.1.1:
+  object-assign@>=4.0.1, object-assign@^4.1.1:
     version "4.1.1"
     resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
     integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -1585,7 +1607,15 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
     integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
   
-  postcss@^8.1.10, postcss@^8.4.5:
+  postcss-px-to-viewport@^1.1.1:
+    version "1.1.1"
+    resolved "https://registry.yarnpkg.com/postcss-px-to-viewport/-/postcss-px-to-viewport-1.1.1.tgz#a25ca410b553c9892cc8b525cc710da47bf1aa55"
+    integrity sha512-2x9oGnBms+e0cYtBJOZdlwrFg/mLR4P1g2IFu7jYKvnqnH/HLhoKyareW2Q/x4sg0BgklHlP1qeWo2oCyPm8FQ==
+    dependencies:
+      object-assign ">=4.0.1"
+      postcss ">=5.0.2"
+  
+  postcss@>=5.0.2, postcss@^8.1.10, postcss@^8.4.5:
     version "8.4.5"
     resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.5.tgz#bae665764dfd4c6fcc24dc0fdf7e7aa00cc77f95"
     integrity sha512-jBDboWM8qpaqwkMwItqTQTiFikhs/67OYVvblFFTM7MrZjt6yMKd6r2kgXizEbTTljacm4NldIlZnhbjr84QYg==
@@ -2166,6 +2196,11 @@ Lockfile:
     dependencies:
       "@volar/shared" "0.29.8"
       vscode-vue-languageservice "0.29.8"
+  
+  vue3-lazy@^1.0.0-alpha.1:
+    version "1.0.0-alpha.1"
+    resolved "https://registry.yarnpkg.com/vue3-lazy/-/vue3-lazy-1.0.0-alpha.1.tgz#326a56c2ade4430c76b7ac90d33a7fde0af9aaa6"
+    integrity sha512-dpjpKK4DC5q+wZVtS/VY3X6pYBJHxRmYanr20s39RB6o6fvbneQ/DNuz37bipYfEdrEvbSZ95Y2SCexuznQNrQ==
   
   vue@^3.2.25:
     version "3.2.26"

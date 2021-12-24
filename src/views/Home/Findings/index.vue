@@ -10,7 +10,7 @@
     <div class="findings-swiper">
       <van-config-provider :theme-vars="themeVars">
         <van-swipe class="my-swipe" :autoplay="5000" indicator-color="white" lazy-render>
-          <van-swipe-item v-for="banner in bannerList.list" :key="banner.bannerId">
+          <van-swipe-item v-for="banner in bannerList" :key="banner.bannerId">
             <div class="my-swipe--image">
               <img v-lazy="banner.pic" :alt="banner.typeTitle" />
               <p
@@ -72,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, Ref, onMounted } from 'vue'
 import { banner, personalized, topSong } from '../../../api/index'
 import SideMenu from '../../../components/SideMenu/index.vue'
 import Search from '../../../components/Search/index.vue'
@@ -83,22 +83,22 @@ const themeVars = {
 }
 
 /** 获取banner数据 */
-const bannerList = reactive({ list: [] as any[] })
+const bannerList: Ref<any[]> = ref([])
 const getBanner = async () => {
   const result = await banner({ type: 1 })
 
   if (result) {
-    bannerList.list = (result as any).banners
+    bannerList.value = (result as any).banners
   }
 }
 
 /** 获取推荐歌单 */
-const recommendList = ref([])
+const recommendList: Ref<any[]> = ref([])
 const getPersonalized = async () => {
   const result = await personalized({ limit: 6 })
 
   if (result) {
-    recommendList.value = result.result
+    recommendList.value = (result as any).result
   }
 }
 
