@@ -266,6 +266,12 @@ watch(
       flex: 1;
       padding: 0 14px;
       overflow-y: scroll;
+      /*解决ios上滑动不流畅*/
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       .body-vip {
         padding: 12px 14px 16px;

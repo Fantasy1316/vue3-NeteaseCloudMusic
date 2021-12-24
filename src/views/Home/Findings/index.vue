@@ -68,6 +68,20 @@
         </div>
       </div>
     </div>
+    <div class="findings-songs">
+      <div class="findings-songs--header">
+        <div class="header-left">
+          <van-button round size="mini" type="default">
+            <i class="iconfont icon-refresh"></i>
+          </van-button>
+          <p class="header-left--title">欧美流行精选</p>
+        </div>
+        <van-button plain round size="mini">
+          <i class="iconfont icon-play"></i>
+          播放
+        </van-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -105,7 +119,7 @@ const getPersonalized = async () => {
 /** 获取歌曲推荐 */
 const topSongList = ref([])
 const getTopSong = async () => {
-  const result = await topSong({ type: 7 })
+  const result = await topSong({ type: 96 })
 
   console.log(result)
 }
@@ -279,7 +293,7 @@ onMounted(() => {
             padding: 3px 5px;
             font-size: 10px;
             color: #fff;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.2);
             border-radius: 50px;
 
             .iconfont {
@@ -296,6 +310,51 @@ onMounted(() => {
           font-size: 12px;
           .--mixins-ellipsis(2);
         }
+      }
+    }
+  }
+
+  &-songs {
+    padding: 14px 0;
+    margin-bottom: 14px;
+    background-color: #fff;
+    border-radius: 10px;
+
+    &--header {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 14px;
+
+      .header-left {
+        display: flex;
+        align-items: center;
+
+        &::v-deep(.van-button--mini) {
+          width: 28px;
+          height: 28px;
+          border-color: transparent;
+
+          .icon-refresh {
+            font-size: 18px;
+            font-weight: 700;
+          }
+        }
+
+        &--title {
+          margin-left: 4px;
+          font-size: 16px;
+          font-weight: 700;
+        }
+      }
+
+      &::v-deep(.van-button--mini) {
+        height: 24px;
+        padding: 0 8px 0 8px;
+        font-size: 12px;
+      }
+
+      .icon-play {
+        font-size: 12px;
       }
     }
   }
