@@ -359,14 +359,14 @@ onMounted(() => {
 
   &-songs {
     padding: 14px 0;
-    margin-bottom: 14px;
     background-color: #fff;
     border-radius: 10px;
 
     &--header {
       display: flex;
       justify-content: space-between;
-      padding: 0 14px;
+      align-items: center;
+      padding: 0 14px 0 10px;
       margin-bottom: 8px;
 
       .header-left {
@@ -432,7 +432,7 @@ onMounted(() => {
         }
 
         &:nth-child(4n - 3) {
-          margin-left: 14px;
+          margin-left: 16px;
         }
 
         // &:nth-child(4n) {
