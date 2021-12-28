@@ -10,6 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'findings',
+        name: 'Findings',
         meta: { title: '发现', authorize: false },
         component: () => import(/* webpackChunkname: home */ '../views/Home/Findings/index.vue')
       }

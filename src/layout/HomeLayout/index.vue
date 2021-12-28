@@ -1,7 +1,11 @@
 <template>
   <div class="app-container">
     <div class="app-container--main">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive :include="['Findings']">
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </div>
     <div class="app-container--tabbar">
       <van-config-provider :theme-vars="themeVars">
