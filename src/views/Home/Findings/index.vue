@@ -70,16 +70,34 @@
     </div>
     <div class="findings-songs">
       <div class="findings-songs--header">
-        <div class="header-left">
-          <van-button round size="mini" type="default">
+        <div class="header-left" @click="handleRefreshSongs">
+          <van-button round size="mini" type="default" :class="{ 'refresh-loading': songsLoading }">
             <i class="iconfont icon-refresh"></i>
           </van-button>
-          <p class="header-left--title">欧美流行精选</p>
+          <p class="header-left--title">新歌推荐</p>
         </div>
         <van-button plain round size="mini">
           <i class="iconfont icon-play"></i>
           播放
         </van-button>
+      </div>
+      <div class="findings-songs--list">
+        <div class="list-item" v-for="item in personalizedNewSongList" :key="item.id">
+          <div class="list-item--cover">
+            <img v-lazy="item.picUrl" alt="" />
+            <i class="iconfont icon-play"></i>
+          </div>
+          <div class="list-item--info">
+            <p class="info-song">
+              {{ item.name }}
+              <span class="info-song--singer"> - {{ handleSongSingers(item.song.artists) }}</span>
+            </p>
+            <p class="info-desc" v-if="item.song.alias.length">
+              {{ item.song.alias.toString() }}
+            </p>
+          </div>
+          <i class="iconfont icon-Play_big_x" v-if="item.song.mvid !== 0"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -87,7 +105,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, Ref, onMounted } from 'vue'
-import { banner, personalized, topSong } from '../../../api/index'
+import { banner, personalized, personalizedNewSong } from '../../../api/index'
 import SideMenu from '../../../components/SideMenu/index.vue'
 import Search from '../../../components/Search/index.vue'
 
@@ -117,17 +135,42 @@ const getPersonalized = async () => {
 }
 
 /** 获取歌曲推荐 */
-const topSongList = ref([])
-const getTopSong = async () => {
-  const result = await topSong({ type: 96 })
+const songsLoading: Ref<boolean> = ref(false)
+const limitMult: Ref<number> = ref(1)
+const personalizedNewSongList: Ref<any[]> = ref([])
+const getPersonalizedNewSong = async () => {
+  if (songsLoading.value) return
+  songsLoading.value = true
+  const result = await personalizedNewSong({ limit: 12 * limitMult.value })
+  songsLoading.value = false
 
-  console.log(result)
+  if (result) {
+    const { result: list } = result as any
+    personalizedNewSongList.value = list.slice(-12)
+  }
+}
+/** 处理歌曲歌手 */
+const handleSongSingers = (list: any[]) => {
+  return list
+    .map((item) => item.name)
+    .toString()
+    .replace(',', '/')
+}
+/** 更新歌曲列表 */
+const handleRefreshSongs = () => {
+  if (limitMult.value < 8) {
+    limitMult.value += 1
+    getPersonalizedNewSong()
+  } else {
+    limitMult.value = 1
+    getPersonalizedNewSong()
+  }
 }
 
 onMounted(() => {
   getBanner()
   getPersonalized()
-  getTopSong()
+  getPersonalizedNewSong()
 })
 </script>
 
@@ -324,6 +367,7 @@ onMounted(() => {
       display: flex;
       justify-content: space-between;
       padding: 0 14px;
+      margin-bottom: 8px;
 
       .header-left {
         display: flex;
@@ -335,13 +379,16 @@ onMounted(() => {
           border-color: transparent;
 
           .icon-refresh {
+            position: absolute;
+            top: 50%;
+            left: 50%;
             font-size: 18px;
             font-weight: 700;
+            transform: translate(-51%, -45%);
           }
         }
 
         &--title {
-          margin-left: 4px;
           font-size: 16px;
           font-weight: 700;
         }
@@ -349,7 +396,7 @@ onMounted(() => {
 
       &::v-deep(.van-button--mini) {
         height: 24px;
-        padding: 0 8px 0 8px;
+        padding: 0 8px 0 6px;
         font-size: 12px;
       }
 
@@ -357,6 +404,116 @@ onMounted(() => {
         font-size: 12px;
       }
     }
+
+    &--list {
+      display: grid;
+      grid-template-columns: 346px 330px 330px 360px;
+      grid-column-gap: 14px;
+      overflow-x: scroll;
+      /*解决ios上滑动不流畅*/
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 5px 0;
+        &::after {
+          content: '';
+          position: absolute;
+          left: 65px;
+          right: 10px;
+          bottom: 0;
+          border-top: 0.5px solid rgb(230, 230, 230);
+        }
+
+        &:nth-child(4n - 3) {
+          margin-left: 14px;
+        }
+
+        // &:nth-child(4n) {
+        //   margin-right: 28px;
+        // }
+
+        &:nth-last-child(-n + 4) {
+          &::after {
+            content: '';
+            border: none;
+          }
+        }
+
+        &--cover {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 54px;
+          height: 54px;
+          background-color: #f8f8f8;
+          border-radius: 8px;
+
+          img {
+            width: 100%;
+            border-radius: 8px;
+          }
+
+          .iconfont {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.8);
+            transform: translate(-50%, -50%);
+          }
+        }
+
+        &--info {
+          flex: 1;
+          position: relative;
+          margin: 0 10px;
+
+          .info-song {
+            font-size: 14px;
+            .--mixins-ellipsis(1);
+
+            &--singer {
+              font-size: 10px;
+              color: rgb(168, 168, 168);
+            }
+          }
+
+          .info-desc {
+            margin-top: 6px;
+            font-size: 12px;
+            color: rgb(139, 139, 139);
+            .--mixins-ellipsis(1);
+          }
+        }
+
+        .icon-Play_big_x {
+          margin: 0 18px 0 14px;
+          font-size: 18px;
+          color: rgb(129, 129, 129);
+        }
+      }
+    }
+  }
+}
+
+.refresh-loading {
+  animation: rotation 0.8s linear infinite;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

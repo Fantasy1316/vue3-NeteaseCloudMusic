@@ -8,6 +8,6 @@ export const personalized = (params?: any) => {
   return Request({ method: 'get', url: '/personalized', params })
 }
 
-export const topSong = (params?: any) => {
-  return Request({ method: 'get', url: '/top/song', params })
+export const personalizedNewSong = (params?: any) => {
+  return Request({ method: 'get', url: '/personalized/newsong', params })
 }
