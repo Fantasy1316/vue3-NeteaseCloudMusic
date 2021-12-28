@@ -82,7 +82,12 @@
         </van-button>
       </div>
       <div class="findings-songs--list">
-        <div class="list-item" v-for="item in personalizedNewSongList" :key="item.id">
+        <div
+          class="list-item"
+          v-for="item in personalizedNewSongList"
+          :key="item.id"
+          @click="handlePathTo(`/player/audio/${item.id}`)"
+        >
           <div class="list-item--cover">
             <img v-lazy="item.picUrl" alt="" />
             <i class="iconfont icon-play"></i>
@@ -108,11 +113,14 @@ import { ref, reactive, Ref, onMounted } from 'vue'
 import { banner, personalized, personalizedNewSong } from '../../../api/index'
 import SideMenu from '../../../components/SideMenu/index.vue'
 import Search from '../../../components/Search/index.vue'
+import { useRouterMethods } from '../../../utils/global'
 
 /** 自定义样式 */
 const themeVars = {
   swipeIndicatorWidth: '10px'
 }
+
+const { handlePathTo } = useRouterMethods()
 
 /** 获取banner数据 */
 const bannerList: Ref<any[]> = ref([])
