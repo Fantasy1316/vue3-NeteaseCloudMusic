@@ -1,5 +1,5 @@
 <template>
-  <div class="audio-player" v-show="fullScreen">
+  <div class="audio-player" v-show="fullScreen" :style="audioPlayBgi">
     <div class="audio-player--content">
       <div class="content-header">
         <i
@@ -7,9 +7,9 @@
           @click="handleCommitStore('SET_AUDIOPLAYERFULLSCREEN', false)"
         ></i>
         <div class="content-header--info">
-          <p class="info-name">爱在西元前</p>
+          <p class="info-name">{{ songInfo.name }}</p>
           <p class="info-singer">
-            周杰伦
+            {{ songInfo.singer }}
             <i class="iconfont icon-right"></i>
           </p>
         </div>
@@ -19,16 +19,18 @@
         <img src="../../assets/images/ciz.png" class="content-disc--needle" alt="" />
         <div class="content-disc--cover refresh-loading">
           <div class="cover-img">
-            <img src="../../assets/images/fantic.png" alt="" />
+            <img :src="songInfo.coverImg" alt="" />
           </div>
         </div>
       </div>
     </div>
+    <audio ref="audioRef"></audio>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, Ref, computed, watch } from 'vue'
+import { songUrl, songDetail } from '@/api/index'
 import { useStoreMethods } from '@/utils/global'
 
 const { store, handleCommitStore } = useStoreMethods()
@@ -36,6 +38,65 @@ const { store, handleCommitStore } = useStoreMethods()
 const fullScreen = computed(() => {
   return store.state.audioPlayer.audioPlayerFullScreen
 })
+const currentSongId = computed(() => {
+  return store.state.audioPlayer.currentSongId
+
+})
+
+const audioRef: Ref<null> = ref(null) as any
+
+/** 获取歌曲信息 */
+const songInfo: Ref<any> = ref({
+  name: '',
+  singer: '',
+  songLink: '',
+  coverImg: '',
+})
+const getSongUrl = async (id: number) => {
+  const result = await songUrl({ id })
+
+  if (result) {
+    console.log(result.data[0].url);
+    const data = result.data[0]
+    songInfo.value.songLink = data.url
+    console.log(songInfo.value);
+    
+    console.log(audioRef);
+    const audioEl = (audioRef as any).value
+    audioEl.src = songInfo.value.songLink
+    audioEl.play()
+  }
+}
+const getSongDetail = async (ids: number | string) => {
+  const result = await songDetail({ ids })
+
+  if (result) {
+    console.log(result);
+    const { name, picUrl } = (result as any).songs[0].al
+    const singer =  (result as any).songs[0].ar[0].name
+
+    songInfo.value.name = name
+    songInfo.value.coverImg = picUrl
+    songInfo.value.singer = singer
+
+    console.log(songInfo);
+
+  }
+}
+
+const audioPlayBgi = computed(() => {
+  return {
+    background: `url(${songInfo.value.coverImg})`,
+    backgroundSize: '206% 100%',
+    backgroundPosition: 'center top',
+    backgroundColor: '#333'
+  }
+})
+
+watch(() => currentSongId.value, (newVal: number) => {
+  getSongUrl(newVal)
+  getSongDetail(newVal)
+} )
 </script>
 
 <style lang="less" scoped>
@@ -45,15 +106,13 @@ const fullScreen = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url('../../assets/images/fantic.png');
-  background-size: 100% 100%;
-  background-color: #333;
   z-index: 999;
 
   &--content {
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(35px);
+    backdrop-filter: blur(34px);
+    background-color: rgba(0, 0, 0, 0.4);
 
     .content-header {
       display: flex;
@@ -109,8 +168,8 @@ const fullScreen = computed(() => {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 260px;
-        height: 260px;
+        width: 280px;
+        height: 280px;
         margin: 90px auto 0;
         background: url('../../assets/images/cgy.png') no-repeat;
         background-size: 100% 100%;
@@ -118,8 +177,8 @@ const fullScreen = computed(() => {
         border-radius: 50%;
 
         .cover-img {
-          width: 172px;
-          height: 172px;
+          width: 184px;
+          height: 184px;
           border-radius: 50%;
 
           img {

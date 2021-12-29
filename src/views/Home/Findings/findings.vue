@@ -86,7 +86,7 @@
           v-for="item in personalizedNewSongList"
           :key="item.id"
           class="list-item"
-          @click="handlePathTo(`/player/audio/${item.id}`)"
+          @click="handlePlaySong(item.id)"
         >
           <div class="list-item--cover">
             <img v-lazy="item.picUrl" alt="" />
@@ -113,7 +113,7 @@ import { ref, reactive, Ref, onMounted } from 'vue'
 import { banner, personalized, personalizedNewSong } from '@/api/index'
 import SideMenu from '@/components/SideMenu/sideMenu.vue'
 import Search from '@/components/Search/search.vue'
-import { useRouterMethods } from '@/utils/global'
+import { useRouterMethods, useStoreMethods } from '@/utils/global'
 
 /** 自定义样式 */
 const themeVars = {
@@ -121,6 +121,7 @@ const themeVars = {
 }
 
 const { handlePathTo } = useRouterMethods()
+const { store } = useStoreMethods()
 
 /** 获取banner数据 */
 const bannerList: Ref<any[]> = ref([])
@@ -175,10 +176,16 @@ const handleRefreshSongs = () => {
   }
 }
 
+/** 播放歌曲 */
+const handlePlaySong = (id: number) => {
+  store.commit('SET_CURRENTSONGID', id)
+  store.commit('SET_AUDIOPLAYERFULLSCREEN', true)
+}
+
 onMounted(() => {
-  // getBannerList()
-  // getPersonalized()
-  // getPersonalizedNewSong()
+  getBannerList()
+  getPersonalized()
+  getPersonalizedNewSong()
 })
 </script>
 
