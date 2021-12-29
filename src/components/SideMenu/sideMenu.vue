@@ -12,7 +12,7 @@
             </div>
             <i class="iconfont icon-scan"></i>
           </div>
-          <div class="menu-body" ref="menuBody">
+          <div ref="menuBody" class="menu-body">
             <div class="body-vip">
               <div class="body-vip--top">
                 <div class="top-left">

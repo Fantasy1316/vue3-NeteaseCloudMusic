@@ -10,15 +10,15 @@
     <div class="findings-swiper">
       <van-config-provider :theme-vars="themeVars">
         <van-swipe class="my-swipe" :autoplay="5000" indicator-color="white" lazy-render>
-          <van-swipe-item v-for="banner in bannerList" :key="banner.bannerId">
+          <van-swipe-item v-for="item in bannerList" :key="item.bannerId">
             <div class="my-swipe--image">
-              <img v-lazy="banner.pic" :alt="banner.typeTitle" />
+              <img v-lazy="item.pic" :alt="item.typeTitle" />
               <p
+                v-if="item.showAdTag"
                 class="my-swipe--type"
-                :style="{ backgroundColor: banner.titleColor }"
-                v-if="banner.showAdTag"
+                :style="{ backgroundColor: item.titleColor }"
               >
-                {{ banner.typeTitle }}
+                {{ item.typeTitle }}
               </p>
             </div>
           </van-swipe-item>
@@ -56,7 +56,7 @@
         </van-button>
       </div>
       <div class="findings-recommend--list">
-        <div class="list-item" v-for="item in recommendList" :key="item.id">
+        <div v-for="item in recommendList" :key="item.id" class="list-item">
           <div class="list-item--cover">
             <img v-lazy="item.picUrl" class="cover-img" />
             <p class="cover-name">
@@ -83,9 +83,9 @@
       </div>
       <div class="findings-songs--list">
         <div
-          class="list-item"
           v-for="item in personalizedNewSongList"
           :key="item.id"
+          class="list-item"
           @click="handlePathTo(`/player/audio/${item.id}`)"
         >
           <div class="list-item--cover">
@@ -97,11 +97,11 @@
               {{ item.name }}
               <span class="info-song--singer"> - {{ handleSongSingers(item.song.artists) }}</span>
             </p>
-            <p class="info-desc" v-if="item.song.alias.length">
+            <p v-if="item.song.alias.length" class="info-desc">
               {{ item.song.alias.toString() }}
             </p>
           </div>
-          <i class="iconfont icon-Play_big_x" v-if="item.song.mvid !== 0"></i>
+          <i v-if="item.song.mvid !== 0" class="iconfont icon-Play_big_x"></i>
         </div>
       </div>
     </div>
@@ -110,10 +110,10 @@
 
 <script setup lang="ts">
 import { ref, reactive, Ref, onMounted } from 'vue'
-import { banner, personalized, personalizedNewSong } from '../../../api/index'
-import SideMenu from '../../../components/SideMenu/index.vue'
-import Search from '../../../components/Search/index.vue'
-import { useRouterMethods } from '../../../utils/global'
+import { banner, personalized, personalizedNewSong } from '@/api/index'
+import SideMenu from '@/components/SideMenu/sideMenu.vue'
+import Search from '@/components/Search/search.vue'
+import { useRouterMethods } from '@/utils/global'
 
 /** 自定义样式 */
 const themeVars = {
@@ -124,7 +124,7 @@ const { handlePathTo } = useRouterMethods()
 
 /** 获取banner数据 */
 const bannerList: Ref<any[]> = ref([])
-const getBanner = async () => {
+const getBannerList = async () => {
   const result = await banner({ type: 1 })
 
   if (result) {
@@ -176,9 +176,9 @@ const handleRefreshSongs = () => {
 }
 
 onMounted(() => {
-  getBanner()
-  getPersonalized()
-  getPersonalizedNewSong()
+  // getBannerList()
+  // getPersonalized()
+  // getPersonalizedNewSong()
 })
 </script>
 
