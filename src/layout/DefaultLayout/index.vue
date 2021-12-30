@@ -44,6 +44,7 @@ const themeVars = {
 
   &--routerview {
     flex: 1;
+    padding-bottom: 50px;
   }
 
   &--miniplayer {
