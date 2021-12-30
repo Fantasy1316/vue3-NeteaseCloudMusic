@@ -1,10 +1,11 @@
 <template>
   <div class="app-container">
-    <router-view class="app-container--routerview" v-slot="{ Component }">
+    <!-- <router-view class="app-container--routerview" v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />
       </keep-alive>
-    </router-view>
+    </router-view> -->
+    <router-view class="app-container--routerview"></router-view>
     <div class="app-container--miniplayer">
       <mini-audio-player />
     </div>

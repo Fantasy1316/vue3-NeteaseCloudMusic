@@ -16,10 +16,19 @@
         <i class="iconfont icon-share"></i>
       </div>
       <div class="content-disc">
-        <img src="../../assets/images/ciz.png" class="content-disc--needle" alt="" />
-        <div class="content-disc--cover refresh-loading">
+        <img
+          src="../../assets/images/ciz.png"
+          class="content-disc--needle"
+          :class="{ 'content-disc--needle__rotate': !currentSongStatus }"
+          alt=""
+        />
+        <div class="content-disc--cover" :class="{ 'refresh-loading': currentSongStatus }">
           <div class="cover-img">
-            <img :src="songInfo.coverImg" alt="" />
+            <img
+              :src="songInfo.cover"
+              alt=""
+              @click="handleCommitStore('SET_CURRENTSONGSTATUS', currentSongStatus ? 0 : 1)"
+            />
           </div>
         </div>
       </div>
@@ -40,63 +49,70 @@ const fullScreen = computed(() => {
 })
 const currentSongId = computed(() => {
   return store.state.audioPlayer.currentSongId
-
+})
+const currentSongStatus = computed(() => {
+  return store.state.audioPlayer.currentSongStatus
 })
 
 const audioRef: Ref<null> = ref(null) as any
 
 /** 获取歌曲信息 */
+const url: Ref<string> = ref('')
 const songInfo: Ref<any> = ref({
   name: '',
   singer: '',
-  songLink: '',
-  coverImg: '',
+  cover: ''
 })
+// 歌曲链接
 const getSongUrl = async (id: number) => {
   const result = await songUrl({ id })
 
   if (result) {
-    console.log(result.data[0].url);
-    const data = result.data[0]
-    songInfo.value.songLink = data.url
-    console.log(songInfo.value);
-    
-    console.log(audioRef);
+    url.value = result.data[0].url
+
     const audioEl = (audioRef as any).value
-    audioEl.src = songInfo.value.songLink
+
+    audioEl.src = url.value
     audioEl.play()
+    handleCommitStore('SET_CURRENTSONGSTATUS', 1)
   }
 }
+// 歌曲详情
 const getSongDetail = async (ids: number | string) => {
   const result = await songDetail({ ids })
 
   if (result) {
-    console.log(result);
     const { name, picUrl } = (result as any).songs[0].al
-    const singer =  (result as any).songs[0].ar[0].name
+    const singer = (result as any).songs[0].ar[0].name
 
-    songInfo.value.name = name
-    songInfo.value.coverImg = picUrl
-    songInfo.value.singer = singer
-
-    console.log(songInfo);
-
+    songInfo.value = {
+      name,
+      singer,
+      cover: picUrl
+    }
+    handleCommitStore('SET_CURRENTSONGINFO', songInfo.value)
   }
 }
 
 const audioPlayBgi = computed(() => {
   return {
-    background: `url(${songInfo.value.coverImg})`,
+    background: `url(${songInfo.value.cover})`,
     backgroundSize: '206% 100%',
     backgroundPosition: 'center top',
     backgroundColor: '#333'
   }
 })
 
-watch(() => currentSongId.value, (newVal: number) => {
-  getSongUrl(newVal)
-  getSongDetail(newVal)
-} )
+watch([currentSongId, currentSongStatus], ([newId, newStatus], [oldId, oldStatus]) => {
+  if (newId && newId !== oldId) {
+    getSongUrl(newId)
+    getSongDetail(newId)
+  }
+  if (newStatus !== oldStatus) {
+    const audioEl = (audioRef as any).value
+    newStatus ? audioEl.play() : audioEl.pause()
+  }
+})
 </script>
 
 <style lang="less" scoped>
@@ -159,9 +175,14 @@ watch(() => currentSongId.value, (newVal: number) => {
         top: -16px;
         left: 50%;
         width: 90px;
-        transform: translateX(-12px) rotate(0);
+        transform: translateX(-12px) rotate(360deg);
         transform-origin: 16px 28px;
+        transition: all 0.5s ease;
         z-index: 1;
+
+        &__rotate {
+          transform: translateX(-12px) rotate(339deg);
+        }
       }
 
       &--cover {

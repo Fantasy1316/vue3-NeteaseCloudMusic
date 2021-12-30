@@ -1,23 +1,42 @@
 <template>
-  <div class="mini-audio-player">
-    <div class="player-cover">
+  <div class="mini-audio-player" @click="handleCommitStore('SET_AUDIOPLAYERFULLSCREEN', true)">
+    <div class="player-cover" :class="{ 'refresh-loading': currentSongStatus }">
       <div class="player-cover--image">
-        <img src="../../assets/images/neteasecloud-logo.png" alt="" />
+        <img :src="currentSongInfo.cover" alt="" />
       </div>
     </div>
     <div class="player-info">
-      <span class="player-info--name">爱在西元前爱在西元爱在西爱在爱</span>
-      <span class="player-info--singer"> - 周杰伦</span>
+      <span class="player-info--name">{{ currentSongInfo.name }}</span>
+      <span class="player-info--singer"> - {{ currentSongInfo.singer }}</span>
     </div>
     <div class="player-contral">
-      <i class="iconfont icon-bofang" v-if="true"></i>
-      <i class="iconfont icon-zanting" v-else></i>
+      <i
+        class="iconfont icon-bofang"
+        v-if="!currentSongStatus"
+        @click.stop="handleCommitStore('SET_CURRENTSONGSTATUS', 1)"
+      ></i>
+      <i
+        class="iconfont icon-zanting"
+        v-else
+        @click.stop="handleCommitStore('SET_CURRENTSONGSTATUS', 0)"
+      ></i>
     </div>
     <i class="iconfont icon-bofangliebiao"></i>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStoreMethods } from '@/utils/global'
+
+const { store, handleCommitStore } = useStoreMethods()
+const currentSongInfo = computed(() => {
+  return store.state.audioPlayer.currentSongInfo
+})
+const currentSongStatus = computed(() => {
+  return store.state.audioPlayer.currentSongStatus
+})
+</script>
 
 <style lang="less" scoped>
 .mini-audio-player {
@@ -44,9 +63,12 @@
     &--image {
       width: 28px;
       height: 28px;
+      border-radius: 28px;
+      overflow: hidden;
 
       img {
         width: 100%;
+        border-radius: 28px;
       }
     }
   }
@@ -74,6 +96,19 @@
   .icon-bofangliebiao {
     font-size: 22px;
     color: rgb(131, 131, 131);
+  }
+}
+
+.refresh-loading {
+  animation: rotation 10s linear infinite;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>
