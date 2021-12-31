@@ -1,6 +1,6 @@
 <template>
   <div class="side-menu">
-    <i class="iconfont icon-menu" @click="show = true"></i>
+    <i class="iconfont icon-meum" @click="show = true"></i>
     <van-config-provider :theme-vars="themeVars">
       <van-popup v-model:show="show" position="left" :style="{ width: '84%', height: '100%' }">
         <div class="menu">
@@ -10,7 +10,7 @@
               <span class="user-login">立即登录</span>
               <i class="iconfont icon-right"></i>
             </div>
-            <i class="iconfont icon-scan"></i>
+            <i class="iconfont icon-saoyisao"></i>
           </div>
           <div ref="menuBody" class="menu-body">
             <div class="body-vip">
@@ -51,7 +51,7 @@
               <van-cell-group>
                 <van-cell title="云村有票" is-link :border="false">
                   <template #icon>
-                    <i class="iconfont icon-tianmaohuopiaotongxing"></i>
+                    <i class="iconfont icon-yanchu"></i>
                   </template>
                 </van-cell>
                 <van-cell title="商城" is-link :border="false">
@@ -76,12 +76,12 @@
               <van-cell-group>
                 <van-cell title="设置" is-link :border="false">
                   <template #icon>
-                    <i class="iconfont icon-setting"></i>
+                    <i class="iconfont icon-shezhi"></i>
                   </template>
                 </van-cell>
                 <van-cell title="夜间模式" :border="false">
                   <template #icon>
-                    <i class="iconfont icon-yueliang"></i>
+                    <i class="iconfont icon-yejianmoshi"></i>
                   </template>
                   <template #value>
                     <van-switch
@@ -94,7 +94,7 @@
                 </van-cell>
                 <van-cell title="定时关闭" is-link :border="false">
                   <template #icon>
-                    <i class="iconfont icon-timer"></i>
+                    <i class="iconfont icon-dingshitingzhibofang"></i>
                   </template>
                 </van-cell>
                 <van-cell title="个性装扮" is-link :border="false">
@@ -136,7 +136,7 @@
                 </van-cell>
                 <van-cell title="音乐闹钟" is-link :border="false">
                   <template #icon>
-                    <i class="iconfont icon-naozhong"></i>
+                    <i class="iconfont icon-yinlenaozhong"></i>
                   </template>
                 </van-cell>
               </van-cell-group>
@@ -150,7 +150,7 @@
                 </van-cell>
                 <van-cell title="优惠券" is-link :border="false">
                   <template #icon>
-                    <i class="iconfont icon-shinshopyouhuiquan"></i>
+                    <i class="iconfont icon-youhuiquan"></i>
                   </template>
                 </van-cell>
                 <van-cell title="我的客服" is-link :border="false">
@@ -226,8 +226,8 @@ watch(
 
 <style lang="less" scoped>
 .side-menu {
-  .icon-menu {
-    font-size: 18px;
+  .icon-meum {
+    font-size: 20px;
     font-weight: 700;
   }
 
@@ -257,8 +257,8 @@ watch(
         }
       }
 
-      .icon-scan {
-        font-size: 20px;
+      .icon-saoyisao {
+        font-size: 22px;
       }
     }
 

@@ -1,0 +1,39 @@
+/* 定义帧动画 */
+@keyframes enter {
+  0% {
+    transform: translateY(20%);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes leave {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animation-up {
+  &-enter-active {
+    animation: enter 0.2s ease-in;
+  }
+
+  &-leave-active {
+    animation: leave 0.3s linear;
+  }
+}

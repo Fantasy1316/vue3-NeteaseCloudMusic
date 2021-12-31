@@ -29,7 +29,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        additionalData: `@import './src/assets/styles/variables.less'; @import './src/assets/styles/mixins.less';`
+        additionalData: `@import './src/assets/styles/variables.less'; @import './src/assets/styles/mixins.less'; @import './src/assets/styles/animation.less';`
       }
     },
     postcss: {

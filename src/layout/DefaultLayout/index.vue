@@ -34,7 +34,8 @@ import AudioPlayer from '@/components/AudioPlayer/audioPlayer.vue'
 const active = ref(0)
 
 const themeVars = {
-  tabbarItemFontSize: '10px'
+  tabbarItemFontSize: '10px',
+  borderColor: 'transparent'
 }
 </script>
 
@@ -52,7 +53,7 @@ const themeVars = {
     left: 0;
     right: 0;
     bottom: 48px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.98);
   }
 }
 </style>

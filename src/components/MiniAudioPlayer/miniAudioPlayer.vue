@@ -45,6 +45,7 @@ const currentSongStatus = computed(() => {
   position: relative;
   height: 48px;
   padding: 0 16px;
+  border-top: 0.5px solid rgb(236, 236, 236);
 
   .player-cover {
     display: flex;

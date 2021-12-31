@@ -1,48 +1,77 @@
 <template>
-  <div class="audio-player" v-show="fullScreen" :style="audioPlayBgi">
-    <div class="audio-player--content">
-      <div class="content-header">
-        <i
-          class="iconfont icon-down"
-          @click="handleCommitStore('SET_AUDIOPLAYERFULLSCREEN', false)"
-        ></i>
-        <div class="content-header--info">
-          <p class="info-name">{{ songInfo.name }}</p>
-          <p class="info-singer">
-            {{ songInfo.singer }}
-            <i class="iconfont icon-right"></i>
-          </p>
+  <transition name="animation-up">
+    <div class="audio-player" v-show="fullScreen" :style="audioPlayBgi">
+      <div class="audio-player--content">
+        <div class="content-header">
+          <i
+            class="iconfont icon-down"
+            @click="handleCommitStore('SET_AUDIOPLAYERFULLSCREEN', false)"
+          ></i>
+          <div class="content-header--info">
+            <p class="info-name">{{ songInfo.name }}</p>
+            <p class="info-singer">
+              {{ songInfo.singer }}
+              <i class="iconfont icon-right"></i>
+            </p>
+          </div>
+          <i class="iconfont icon-fenxiangpt-wangyiicon"></i>
         </div>
-        <i class="iconfont icon-share"></i>
-      </div>
-      <div class="content-disc">
-        <img
-          src="../../assets/images/ciz.png"
-          class="content-disc--needle"
-          :class="{ 'content-disc--needle__rotate': !currentSongStatus }"
-          alt=""
-        />
-        <div class="content-disc--cover" :class="{ 'refresh-loading': currentSongStatus }">
-          <div class="cover-img">
-            <img
-              :src="songInfo.cover"
-              alt=""
-              @click="handleCommitStore('SET_CURRENTSONGSTATUS', currentSongStatus ? 0 : 1)"
-            />
+        <div class="content-disc">
+          <img
+            src="../../assets/images/ciz.png"
+            class="content-disc--needle"
+            :class="{ 'content-disc--needle__rotate': !currentSongStatus }"
+            alt=""
+          />
+          <div class="content-disc--cover">
+            <div class="cover-img" :style="discCoverStyle">
+              <img :src="songInfo.cover" alt="" />
+            </div>
+          </div>
+        </div>
+        <div class="content-contral">
+          <div class="content-contral--top">
+            <i class="iconfont icon-xihuan-kongpt-wangyiicon"></i>
+            <i class="iconfont icon-xiazaipt"></i>
+            <i class="iconfont icon-pinglunpt-wangyiicon"></i>
+            <i class="iconfont icon-xinxi"></i>
+          </div>
+          <div class="content-contral--mid">
+            <p class="mid-start">{{ handleSecondFormat(songCurrentSrcond) }}</p>
+            <div class="mid-progress"></div>
+            <p class="mid-end">{{ handleSecondFormat(songAllSecond) }}</p>
+          </div>
+          <div class="content-contral--btm">
+            <i class="iconfont icon-suijibofang-wangyiicon"></i>
+            <i class="iconfont icon-shangyiqu-wangyiicon"></i>
+            <i
+              class="iconfont icon-zanting-wangyiicon"
+              v-if="!currentSongStatus"
+              @click="handleCommitStore('SET_CURRENTSONGSTATUS', 1)"
+            ></i>
+            <i
+              class="iconfont icon-bofang-wangyiicon"
+              v-else
+              @click="handleCommitStore('SET_CURRENTSONGSTATUS', 0)"
+            ></i>
+            <i class="iconfont icon-xiayiqu-wangyiicon"></i>
+            <i class="iconfont icon-caidan"></i>
           </div>
         </div>
       </div>
+      <audio ref="audioRef"></audio>
     </div>
-    <audio ref="audioRef"></audio>
-  </div>
+  </transition>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, computed, watch } from 'vue'
 import { songUrl, songDetail } from '@/api/index'
 import { useStoreMethods } from '@/utils/global'
+import useRotate from './use-rotate'
 
 const { store, handleCommitStore } = useStoreMethods()
+const { discCoverStyle } = useRotate()
 
 const fullScreen = computed(() => {
   return store.state.audioPlayer.audioPlayerFullScreen
@@ -63,6 +92,8 @@ const songInfo: Ref<any> = ref({
   singer: '',
   cover: ''
 })
+const songAllSecond: Ref<number> = ref(0)
+const songCurrentSrcond: Ref<number> = ref(100)
 // 歌曲链接
 const getSongUrl = async (id: number) => {
   const result = await songUrl({ id })
@@ -71,10 +102,13 @@ const getSongUrl = async (id: number) => {
     url.value = result.data[0].url
 
     const audioEl = (audioRef as any).value
-
     audioEl.src = url.value
-    audioEl.play()
-    handleCommitStore('SET_CURRENTSONGSTATUS', 1)
+
+    audioEl.oncanplay = () => {
+      audioEl.play()
+      songAllSecond.value = audioEl.duration
+      handleCommitStore('SET_CURRENTSONGSTATUS', 1)
+    }
   }
 }
 // 歌曲详情
@@ -102,6 +136,17 @@ const audioPlayBgi = computed(() => {
     backgroundColor: '#333'
   }
 })
+
+const handleSecondFormat = (time: number) => {
+  const integerTime = Math.round(time)
+  if (integerTime >= 60) {
+    const minute = Math.floor(integerTime / 60)
+    const second = integerTime % 60
+    return `${minute >= 10 ? minute : '0' + minute}:${second >= 10 ? second : '0' + second}`
+  } else {
+    return `00:${integerTime >= 10 ? integerTime : '0' + integerTime}`
+  }
+}
 
 watch([currentSongId, currentSongStatus], ([newId, newStatus], [oldId, oldStatus]) => {
   if (newId && newId !== oldId) {
@@ -164,6 +209,12 @@ watch([currentSongId, currentSongStatus], ([newId, newStatus], [oldId, oldStatus
           }
         }
       }
+
+      .icon-fenxiangpt-wangyiicon {
+        position: relative;
+        top: 0.8px;
+        font-size: 22px;
+      }
     }
 
     .content-disc {
@@ -209,19 +260,67 @@ watch([currentSongId, currentSongStatus], ([newId, newStatus], [oldId, oldStatus
         }
       }
     }
+
+    .content-contral {
+      position: fixed;
+      bottom: 40px;
+      left: 20px;
+      right: 20px;
+      color: #fff;
+
+      &--top {
+        display: flex;
+        align-items: center;
+
+        .iconfont {
+          flex: 1;
+          font-size: 24px;
+          font-weight: lighter;
+          color: #cccccc;
+          text-align: center;
+        }
+      }
+
+      &--mid {
+        display: flex;
+        align-items: center;
+        margin: 20px 0;
+
+        .mid-start,
+        .mid-end {
+          font-size: 12px;
+          color: #ccc;
+        }
+
+        .mid-progress {
+          flex: 1;
+          height: 1px;
+          border-radius: 1px;
+          background-color: rgb(83, 83, 83);
+          margin: 0 10px;
+        }
+      }
+
+      &--btm {
+        display: flex;
+        align-items: center;
+
+        .iconfont {
+          flex: 1;
+          font-size: 24px;
+          text-align: center;
+        }
+
+        .icon-zanting-wangyiicon,
+        .icon-bofang-wangyiicon {
+          font-size: 54px;
+        }
+      }
+    }
   }
 }
 
 .refresh-loading {
   animation: rotation 10s linear infinite;
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 </style>
